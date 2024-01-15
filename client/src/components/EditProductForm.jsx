@@ -10,6 +10,7 @@ function EditProductForm() {
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCatagory] = useState("");
 
   const getCurrentProduct = async () => {
     const result = await axios(
@@ -19,6 +20,7 @@ function EditProductForm() {
     setImageUrl(result.data.data.image);
     setPrice(result.data.data.price);
     setDescription(result.data.data.description);
+    setCatagory(result.data.data.category);
   };
 
   const updateProduct = async () => {
@@ -27,6 +29,7 @@ function EditProductForm() {
       image: imageUrl,
       price,
       description,
+      category,
     });
     navigate("/");
   };
@@ -36,7 +39,7 @@ function EditProductForm() {
     updateProduct();
   };
 
-  useEffect(() => {
+  useEffect(() => {  //<<  useEffect กำลังเฝ้าระวัง getCurrentProduct() ถ้า function นี้มีการเปลี่ยนแปลงให้ rerender
     getCurrentProduct();
   }, []);
 
@@ -52,9 +55,9 @@ function EditProductForm() {
             type="text"
             placeholder="Enter name here"
             onChange={(event) => {
-              setName(event.target.value);
-            }}
-            value={name}
+              setName(event.target.value); //<< setName ยังเป็นค่าเดิมอยู่
+            }}                             //event.target.value จะเก็บค่าก็ต่อเมื่อเรากดพิมพ์ข้อมูลใหม่ แล้วsubmit 
+            value={name}                   //ค่าจะส่งไปที่ data 
           />
         </label>
       </div>
@@ -108,7 +111,14 @@ function EditProductForm() {
       <div className="input-container">
         <label>
           Category
-          <select id="category" name="category" value="">
+          <select
+            id="category"
+            name="category"
+            value={category}
+            onChange={(e) => {
+              setCatagory(e.target.value);
+            }}
+          >
             <option disabled value="">
               -- Select a category --
             </option>
